@@ -29,7 +29,15 @@ Further features are:
 
 You need to install the [Robot Operating System (ROS)](https://www.ros.org/) to use our software. We target [ROS Kinetic](http://wiki.ros.org/kinetic/Installation) on Ubuntu 16.04, but [ROS Melodic](http://wiki.ros.org/melodic/Installation) seems to work as well.
 
-Note for VM users: Gazebo 7.0.0, which is installed with ROS Kinetic by default, [does not work](https://bitbucket.org/osrf/gazebo/issues/1837/vmware-rendering-z-ordering-appears-random) on a virtual machine. To solve this, Gazebo has to be updated to at least 7.4.0 [as explained here](http://gazebosim.org/tutorials?cat=install&tut=install_ubuntu&ver=7.0#Alternativeinstallation:step-by-step).
+Note for VM users: Gazebo 7.0.0, which is installed with ROS Kinetic by default, [does not work](https://bitbucket.org/osrf/gazebo/issues/1837/vmware-rendering-z-ordering-appears-random) on a virtual machine. To solve this, Gazebo has to be updated to at least 7.4.0. 
+This can be done running the following commands:
+$ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+$ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+$ sudo apt update
+$ sudo apt upgrade
+
+To check the gazebo version you can use this command:
+$ dpkg-query -W | grep gazebo
 
 Install dependencies:
 
