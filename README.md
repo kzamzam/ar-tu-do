@@ -38,8 +38,17 @@ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
 sudo apt update
 sudo apt upgrade
 
-#To check the gazebo version you can use this command:
+# To check the gazebo version you can use this command:
 dpkg-query -W | grep gazebo
+
+# Some plugins you may need to install:
+sudo apt-get install ros-kinetic-ros-control
+sudo apt-get install ros-kinetic-ros-controllers
+sudo apt-get install ros-kinetic-gazebo-ros-control
+sudo apt-get install ros-kinetic-ackermann-msgs
+sudo apt-get install ros-kinetic-joy
+sudo apt-get install ros-kinetic-gazebo-ros-pkgs
+sudo apt-get install ros-kinetic-teb-local-planner
 ```
 
 Install dependencies:
