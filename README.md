@@ -90,6 +90,13 @@ Compile while inside the `ros_ws`directory:
 catkin_make
 ```
 
+In the case that you get an error concerning changing namespace to leagcy mode for gazebo:
+Go to ar-tu-do/ros-ws/src/simulation/racer_description/urdf/racer_plugins.gazebo and add the following line inside the <plugin> of gazebo plugins:
+  
+ ```bash
+<legacyModeNS>true</legacyModeNS>	
+``` 
+
 Set up enviroment variables for your shell:
 
 ```bash
