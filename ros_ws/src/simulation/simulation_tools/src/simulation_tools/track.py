@@ -1,5 +1,7 @@
 # coding: utf-8
-
+'''
+	The Track class as well as TrackPosition which contains important information about location of car in track is implemented here
+'''
 import random
 import numpy as np
 import math
@@ -10,22 +12,24 @@ from tf.transformations import euler_from_quaternion
 from track_geometry import PATH
 
 from collections import namedtuple
+'''
+Returns a new tuple subclass named Point. The new subclass is used to create tuple-like objects that have fields accessible by attribute lookup as well as being indexable and iterable
+'''
 Point = namedtuple("Point", ["x", "y"])
-
 
 class TrackPosition():
     def __init__(self, segment, x, y, point, track):
         self.point = point
         self.segment = segment
-        self.distance_to_center = x
-        self.segment_distance = y
-        self.segment_progress = y / track.segment_length[segment]
-        self.total_distance = track.cumulative_distance[segment] + y
+        self.distance_to_center = x 
+        self.segment_distance = y # distance moved in cuurent segment
+        self.segment_progress = y / track.segment_length[segment] # progress done in current segment
+        self.total_distance = track.cumulative_distance[segment] + y 
         self.total_progress = self.total_distance / track.length
         self.angle = math.atan2(
-            track.forward[segment, 1], track.forward[segment, 0])
+            track.forward[segment, 1], track.forward[segment, 0]) # angle of the segment to horizontal, not completely understood
 
-    def __str__(self):
+    def __str__(self): # This is what will be returned when you call the print() function on an object of type TrackPosition
         return "{0:.2f} m ({1:.0f}%), segment {2:d}, to center: {3:.2f} m, track: {4:.0f}°".format(
             self.total_distance,
             self.total_progress * 100,
@@ -33,33 +37,33 @@ class TrackPosition():
             self.distance_to_center,
             self.angle * 180 / math.pi
         )
-
+		
     def get_relative_angle(self, orientation):
         quaternion = [
             orientation.w,
             orientation.x,
             orientation.y,
             orientation.z]
-        euler = euler_from_quaternion(quaternion)
-        return (euler[0] + self.angle) % (2 * math.pi) - math.pi
+        euler = euler_from_quaternion(quaternion) # orientation with world frame, (x to left and y upward)
+        return (euler[0] + self.angle) % (2 * math.pi) - math.pi 
 
     def faces_forward(self, orientation):
-        return abs(self.get_relative_angle(orientation)) < math.pi / 2
+        return abs(self.get_relative_angle(orientation)) < math.pi / 2 # magniutde less than 90deg, then we face forward
 
 
 class Track():
     def __init__(self, points):
-        self.points = points[:-1, :]
-        self.size = points.shape[0] - 1
-        relative = points[1:, :] - points[:-1, :]
-        self.segment_length = np.linalg.norm(relative, axis=1)
-        self.length = np.sum(self.segment_length)
-        self.forward = relative / self.segment_length[:, np.newaxis]
+        self.points = points[:-1, :] # just copying of the points to the attribute except last point
+        self.size = points.shape[0] - 1	# size is no. of points -1 since this is the resulting number of vectors 
+        relative = points[1:, :] - points[:-1, :] # the difference between each point and the consecutive point stored as an array
+        self.segment_length = np.linalg.norm(relative, axis=1) # magnitude(len) each vector, since axis=1 so each row is considered a vector
+        self.length = np.sum(self.segment_length) # total length of the vectors
+        self.forward = relative / self.segment_length[:, np.newaxis] # getting the normalized vectorized, just direction info is preserved
         self.right = np.array(
-            [self.forward[:, 1], -self.forward[:, 0]]).transpose()
+            [self.forward[:, 1], -self.forward[:, 0]]).transpose() # rotation of forward right by 90 degrees
         self.cumulative_distance = np.zeros(points.shape[0])
-        self.cumulative_distance[1:] = np.cumsum(self.segment_length)
-
+        self.cumulative_distance[1:] = np.cumsum(self.segment_length) # Cumlative sum of segments
+		# NEED TO UNDERSTAND HOW BOTTOM TWO METHODS WORK #
     def localize(self, point):
         ''' Returns a TrackPosition object based on a position in world space. '''
         local = np.array([point.x, point.y]) - self.points

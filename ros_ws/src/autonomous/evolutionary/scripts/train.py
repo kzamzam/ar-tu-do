@@ -12,6 +12,10 @@ import simulation_tools.reset_car as reset_car
 
 MAX_EPISODE_LENGTH = 5000
 INITIAL_RANDOM_POPULATION_SIZE = 250
+<<<<<<< Updated upstream
+=======
+# Continue training after saving the model
+>>>>>>> Stashed changes
 CONTINUE_TRAINING = False
 
 

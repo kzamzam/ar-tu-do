@@ -2,11 +2,10 @@
 
 <launch>
   <!-- drive_parameters converter -->
-  <node 
+  <node
     pkg="vesc_sim" 
     type="vesc_sim_driver" 
     name="vesc_sim_driver" 
-    output="screen">
-  </node>
+    output="screen"/>
 
 </launch>

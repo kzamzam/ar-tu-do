@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+'''
+	This is the file that launches the Q_learning node for driving the car. 
+'''
+
 from reinforcement_learning_node import ReinforcementLearningNode, device
 import os
 import rospy
@@ -8,11 +12,8 @@ import torch
 
 
 class QLearningDrivingNode(ReinforcementLearningNode):
-    ''' ROS node to drive the car using previously learned
-    Q-Learning weights
-    '''
-
-    def __init__(self):
+    
+    def __init__(self):	# Intializes the Neural Network and saves it into policy from parameters in parameters_q_learning
         self.policy = NeuralQEstimator().to(device)
 
         try:

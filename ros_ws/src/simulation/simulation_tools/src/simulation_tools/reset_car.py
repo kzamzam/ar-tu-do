@@ -1,18 +1,27 @@
 #!/usr/bin/env python
-
+'''
+	Controls how the car resets when it collides or max no# of iterations per episode is over
+'''
 import rospy
 from gazebo_msgs.srv import SetModelState
-from gazebo_msgs.msg import ModelState, ModelStates
+from gazebo_msgs.msg import ModelState, ModelStates # contains model name, twist message, pose, and reference frame defaults as world
 from tf.transformations import quaternion_from_euler
 
 import math
 import random
 
-from track import track, Point
+from track import track, Point # importing the already created track object and named tupple point
 
+'''
+	Function that sets the pose of the car.
+	Inputs: position as object that has x and y coordinates
+		orienation as angle in radians
+'''
+
+set_model_state = None
 
 def set_pose(position, orientation):
-    state = ModelState()
+    state = ModelState() 
     state.model_name = "racer"
     state.pose.position.x = position.x
     state.pose.position.y = position.y
@@ -27,8 +36,8 @@ def set_pose(position, orientation):
     set_model_state(state)
 
 
-def reset(progress=0, angle=0, offset_from_center=0, forward=True):
-    position = track.get_position(progress * track.length, offset_from_center)
+def reset(progress=0, angle=0, offset_from_center=0, forward=True): # Those values are just default values
+    position = track.get_position(progress * track.length, offset_from_center) # used to find the appropriate position and angle of car 
     angle += position.angle
     if forward:
         angle += math.pi
@@ -38,9 +47,6 @@ def reset(progress=0, angle=0, offset_from_center=0, forward=True):
 def reset_random(max_angle=0, max_offset_from_center=0, forward=True):
     reset(random.random(), (random.random() * 2 - 1) * max_angle,
           (random.random() * 2 - 1) * max_offset_from_center, forward)
-
-
-set_model_state = None
 
 
 def register_service():
