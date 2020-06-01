@@ -54,8 +54,8 @@ class QLearningTrainingNode(TrainingNode):
 
         # This is the part where we get the target q_value(here named as q_updates) of the next_states from the replay memory
         next_state_values = self.policy.forward(next_states).max(1)[0].detach()
+        next_state_values[is_terminal] = 0.0  # q_value of a terminal state ( crashes ) should be zero
         q_updates = rewards + next_state_values * DISCOUNT_FACTOR  # updating the q_value since it's after a transition of the current state using th eupdate rule. It makes sense according to theory that this q_value should be same as q_value of the state before the transition.
-        q_updates[is_terminal] = 0.0  # q_value of a terminal state ( crashes ) should be zero
 
         # This is the part where we retrain the policy NN on the loss between the target q_values and q_values which we already got from prev state
         self.optimizer.zero_grad()  # torch accumulates the gradient of past runs, so we need to make it zero
