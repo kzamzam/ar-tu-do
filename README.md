@@ -29,7 +29,27 @@ Further features are:
 
 You need to install the [Robot Operating System (ROS)](https://www.ros.org/) to use our software. We target [ROS Kinetic](http://wiki.ros.org/kinetic/Installation) on Ubuntu 16.04, but [ROS Melodic](http://wiki.ros.org/melodic/Installation) seems to work as well.
 
-Note for VM users: Gazebo 7.0.0, which is installed with ROS Kinetic by default, [does not work](https://bitbucket.org/osrf/gazebo/issues/1837/vmware-rendering-z-ordering-appears-random) on a virtual machine. To solve this, Gazebo has to be updated to at least 7.4.0 [as explained here](http://gazebosim.org/tutorials?cat=install&tut=install_ubuntu&ver=7.0#Alternativeinstallation:step-by-step).
+Note for VM users: Gazebo 7.0.0, which is installed with ROS Kinetic by default, [does not work](https://bitbucket.org/osrf/gazebo/issues/1837/vmware-rendering-z-ordering-appears-random) on a virtual machine. To solve this, Gazebo has to be updated to at least 7.4.0. 
+This can be done running the following commands:
+
+```bash
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+sudo apt update
+sudo apt upgrade
+
+# To check the gazebo version you can use this command:
+dpkg-query -W | grep gazebo
+
+# Some plugins you may need to install:
+sudo apt-get install ros-kinetic-ros-control
+sudo apt-get install ros-kinetic-ros-controllers
+sudo apt-get install ros-kinetic-gazebo-ros-control
+sudo apt-get install ros-kinetic-ackermann-msgs
+sudo apt-get install ros-kinetic-joy
+sudo apt-get install ros-kinetic-gazebo-ros-pkgs
+sudo apt-get install ros-kinetic-teb-local-planner
+```
 
 Install dependencies:
 
@@ -37,6 +57,7 @@ Install dependencies:
 sudo pip uninstall pip && sudo apt install python-pip
 sudo apt install libsdl2-dev clang-format python-pyqtgraph
 pip install torch autopep8 cython circle-fit
+pip install future
 
 # RangeLibc
 git clone http://github.com/kctess5/range_libc
@@ -68,6 +89,13 @@ Compile while inside the `ros_ws`directory:
 ```bash
 catkin_make
 ```
+
+In the case that you get an error concerning changing namespace to leagcy mode for gazebo:
+Go to ar-tu-do/ros-ws/src/simulation/racer_description/urdf/racer_plugins.gazebo and add the following line inside of the gazebo plugins:
+  
+ ```bash
+<legacyModeNS>true</legacyModeNS>	
+``` 
 
 Set up enviroment variables for your shell:
 
