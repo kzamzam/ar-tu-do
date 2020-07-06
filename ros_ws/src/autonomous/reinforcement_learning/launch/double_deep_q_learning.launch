@@ -5,7 +5,7 @@
 
   <node
     pkg="reinforcement_learning"
-    type="train_q_learning.py"
+    type="dueling_ddqn.py"
     name="q_learning_training"
     output="screen" >
   </node>

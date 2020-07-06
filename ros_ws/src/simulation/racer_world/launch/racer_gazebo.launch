@@ -10,7 +10,7 @@
   <arg name="verbose" default="true"/>
   <arg name="use_gpu" default="true"/>
   <arg name="visualize_lidar" default="false"/>
-  <arg name="laser_sample_count" default="1080"/>
+  <arg name="laser_sample_count" default="1080"/> 
   <arg name="extra_gazebo_args" default=""/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

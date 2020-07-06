@@ -119,11 +119,13 @@ class TrainingNode(ReinforcementLearningNode):
         if self.state is not None:
             self.check_car_orientation() # making sure car is running in correct direction before giving any rewards
             reward = self.get_reward()
+            if self.is_terminal_step:
+                reward = -20  # In case car crashed it recieves -5
             self.cumulative_reward += reward # calc. new cumlative reward for this episode
             self.on_complete_step(self.state, self.action, reward, new_state)
 
         if self.is_terminal_step or self.episode_length >= self.max_episode_length: # terminal: agent crashes or takes >2 steps in worng dir
-            self.drive_forward = random.random() > 0.5 # Probability of moving in forward or backward direction when car resets 
+            self.drive_forward = True #random.random() > 0.5 # Probability of moving in forward or backward direction when car resets
             reset_car.reset_random(
                 max_angle=math.pi / 180 * 20, # max angle deviation from proper heading of 20 degrees
                 max_offset_from_center=0.2,

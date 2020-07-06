@@ -1,4 +1,7 @@
 import numpy as np
+import matplotlib
+#matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 INNER_WALLS = np.array((
     (-12.88, 1.39),
@@ -221,4 +224,8 @@ PATH = np.array((
     (-6.00, -0.17),
     (2.64, -0.36))
 )
-
+plt.plot(INNER_WALLS[:, 0], INNER_WALLS[:, 1], color='gray', linewidth=0.6)
+plt.plot(OUTER_WALLS[:, 0], OUTER_WALLS[:, 1], color='gray', linewidth=0.6)
+plt.plot(PATH[:, 0], PATH[:, 1], color='blue', linewidth=0.6)
+plt.savefig("mygraph.png")
+#plt.show()

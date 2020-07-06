@@ -36,7 +36,7 @@ class QLearningTrainingNode(TrainingNode):
             self.policy.load()
 
     def replay(self):
-        if len(self.memory) < BATCH_SIZE:  # if replay memory has less entries than batch_size then we don't train
+        if len(self.memory) < 1000:  #BATCH_SIZE:  # if replay memory has less entries than batch_size then we don't train
             return
 
         if self.optimization_step_count == 0:
@@ -91,12 +91,14 @@ class QLearningTrainingNode(TrainingNode):
         track_position = track.localize(self.car_position)
         distance = abs(track_position.distance_to_center) # distance to enter line of the track
 
-        if distance < 0.2:
+        if distance < 0.1:
             return 1
+        elif distance < 0.2:
+            return 0.8
         elif distance < 0.4:
-            return 0.7
+            return 0.5
         else:
-            return 0.4
+            return 0.2
 
     def get_episode_summary(self):
         return TrainingNode.get_episode_summary(self) + ' ' \
@@ -113,3 +115,4 @@ class QLearningTrainingNode(TrainingNode):
 rospy.init_node('q_learning_training', anonymous=True)
 node = QLearningTrainingNode()
 rospy.spin() # keeps python from terminating this file as long as the node is active
+

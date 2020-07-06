@@ -50,6 +50,7 @@
                     </surface>
                 </collision>
             </link>
+
             <link name="walls-collision-link">
                 <collision name="walls-collision">
                     <geometry>
@@ -71,6 +72,7 @@
                     </contact>
                 </sensor>
             </link>
+
             <link name="decoration-collision-link">
                 <collision name="decoration-collision">
                     <geometry>
