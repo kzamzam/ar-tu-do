@@ -10,6 +10,7 @@ import sys
 
 from tf.transformations import euler_from_quaternion
 from track_geometry import PATH
+from test_track_geometry import center_line
 
 from collections import namedtuple
 '''
@@ -94,11 +95,17 @@ world_name = rospy.get_param("world_name")
 if world_name not in [
     "racetrack_decorated",
     "racetrack_decorated_2",
-        "racetrack_decorated_2_big"]:
+    "racetrack_decorated_2_big",
+    "test_track"]:
     print("ERROR: Racetrack not supported by track.py")
     sys.exit(1)
 
 if world_name == "racetrack_decorated_2_big":
     PATH *= 2.5
 
-track = Track(PATH)
+if world_name == "test_track":
+    track = Track(center_line)
+else:
+    track = Track(PATH)
+
+
