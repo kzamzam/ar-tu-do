@@ -273,7 +273,7 @@ The arguments can be changed permanently by editing the launch files.
   </tr>
   <tr>
     <td><code>world</code></td>
-    <td>The name of the racetrack. Possible values: <code>racetrack_decorated</code>, <code>racetrack_decorated_2</code> (default) and <code>racetrack_decorated_2_big</code></td>
+    <td>The name of the racetrack. Possible values: <code>racetrack_decorated</code> (default) , <code>racetrack_decorated_2</code>, <code>test_track</code> and <code>racetrack_decorated_2_big</code></td>
     <td>✗</td>
     <td>✗</td>
     <td>✓</td>
