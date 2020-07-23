@@ -43,6 +43,7 @@ class PIDController():
         self.integral = 0
         self.previous_error = 0
 
+
     def update_and_get_correction(self, error, delta_time):
         self.integral += error * delta_time
         if self.integral > self.anti_windup:
@@ -183,10 +184,16 @@ def handle_scan(laser_scan, delta_time):
 
 
 last_scan = None
-
+#counter = 0
+#saver = np.zeros((100000, 180), dtype=float)
 
 def laser_callback(scan_message):
     global last_scan
+    #global counter
+    #global saver
+
+    #if counter < 100000:
+    #    saver[counter] = scan_message.ranges
 
     scan_time = scan_message.header.stamp.to_sec()
     if last_scan is not None and abs(scan_time - last_scan) > 0.0001 and scan_time > last_scan:  # nopep8
@@ -194,6 +201,10 @@ def laser_callback(scan_message):
         handle_scan(scan_message, delta_time)
 
     last_scan = scan_time
+    #counter += 1
+    #if counter == 100000:
+    #    print("laser scans saved")
+    #    np.save('/home/zamzam/ar-tu-do/ros_ws/src/autonomous/reinforcement_learning/laser_scans', saver)
 
 
 def dynamic_configuration_callback(config, level):
@@ -215,5 +226,5 @@ drive_parameters_publisher = rospy.Publisher(
 
 Server(wallfollowing2Config, dynamic_configuration_callback)
 
-while not rospy.is_shutdown():
+while not rospy.is_shutdown() :
     rospy.spin()

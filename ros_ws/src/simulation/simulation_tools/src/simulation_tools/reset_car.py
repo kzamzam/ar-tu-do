@@ -42,6 +42,7 @@ def reset(progress=0, angle=0, offset_from_center=0, forward=True): # Those valu
     if forward:
         angle += math.pi
     set_pose(position.point, angle)
+	#set_pose(Point(0, 21.5), (math.pi))
 
 
 def reset_random(max_angle=0, max_offset_from_center=0, forward=True):

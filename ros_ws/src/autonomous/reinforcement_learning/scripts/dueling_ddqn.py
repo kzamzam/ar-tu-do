@@ -16,7 +16,9 @@ import time
 import rospy
 import math
 import random
-
+import sys
+from tensorflow.keras.models import load_model
+from datetime import datetime
 
 from std_srvs.srv import Empty as EmptyS
 from std_srvs.srv import EmptyRequest
@@ -37,7 +39,6 @@ mem_size = 10000
 gamma = 0.99
 epsilon = 0.99
 learning_rate = 0.0001
-laser_sample_count = 180
 batch_size = 32
 actions = [(-0.78, 0.2), (-0.65, 0.2), (-0.3, 0.2), (-0.2, 0.2), (-0.14, 0.2), (-0.09, 0.2), (-0.052, 0.2), (-0.035, 0.2), (-0.017, 0.2),
            (0, 0.2),
@@ -50,7 +51,13 @@ replace = 100
 max_episode_length = 1000
 pretrain = 500
 
-Train = False  # Set to true when you want to train the NN, and false if you want to load the prev. trained model and evaluate it
+Train = True # Set to true when you want to train the NN, and false if you want to load the prev. trained model and evaluate it
+Encoded = False  # Set to true when you want to use the encoded version of the lidar
+if Encoded:
+    laser_sample_count = 10
+else:
+    laser_sample_count = 180
+
 
 class ReplayBuffer():  # This class handles how the agent stores the transitions in memory
     def __init__(self, max_size, input_shape):  # input shape is shape of states to store in mem.
@@ -126,7 +133,11 @@ class DuelingDeepQNetwork(nn.Module):  # The class that handles the dueling deep
 class Agent():
     def __init__(self, gamma, epsilon, lr, n_actions, laser_sample_count,
                  mem_size, batch_size, actions, eps_min, eps_start, eps_dec,
-                 replace, max_episode_length, chkpt_dir='/home/zamzam/ar-tu-do/ros_ws/src/autonomous/reinforcement_learning/models'):
+                 replace, max_episode_length):
+        if Encoded:
+            chkpt_dir = '/home/zamzam/ar-tu-do/ros_ws/src/autonomous/reinforcement_learning/models/Encoded'
+        else:
+            chkpt_dir = '/home/zamzam/ar-tu-do/ros_ws/src/autonomous/reinforcement_learning/models/Full_trackOpt'
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
@@ -149,6 +160,7 @@ class Agent():
         self.total_step_count = 0
         self.cumulative_reward = 0
         self.done = False
+        self.encoder = load_model('/home/zamzam/ar-tu-do/ros_ws/src/autonomous/reinforcement_learning/scripts/weights/encoder_weights.h5')
 
         self.net_output_debug_string = ""
         self.episode_length_history = deque(maxlen=50)
@@ -347,7 +359,16 @@ class Agent():
         	Callback function when laser message is recieved from lidar.
         '''
         self.pause_physics_client(EmptyRequest())
-        state_ = self.convert_laser_message_to_tensor(message) # convert to tensor of size depending on var. LASER_SAMPLE_COUNT.
+        if Encoded:
+            x = np.asarray(message.ranges)
+            x = x.reshape(-1,180,1)
+            res = self.encoder.predict(x)
+            state_ = res.reshape(10)
+            state_ = T.tensor(state_,
+            device=T.device('cuda:0' if T.cuda.is_available() else 'cpu'),
+            dtype=T.float)
+        else:
+            state_ = self.convert_laser_message_to_tensor(message) # convert to tensor of size depending on var. LASER_SAMPLE_COUNT.
 
         if self.state is not None:
             self.check_car_orientation() # making sure car is running in correct direction before giving any rewards
